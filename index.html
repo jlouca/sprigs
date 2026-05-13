@@ -69,6 +69,13 @@
       </div>
       <div><label for="plantNoteText" class="block text-sm font-medium text-green-800 mb-1">Initial Note (optional)</label> <textarea id="plantNoteText" rows="2" maxlength="2000" class="w-full border border-green-300 rounded-lg px-3 py-2 text-sm bg-white resize-none" placeholder="How's your plant doing?"></textarea>
       </div>
+      <div>
+       <button type="button" onclick="toggleReminderSection('plant')" class="flex items-center gap-1.5 text-sm text-green-600 hover:text-green-800 transition"><i data-lucide="bell" style="width:14px;height:14px;"></i> Set a reminder</button>
+       <div id="plantReminderSection" class="hidden mt-2 flex flex-col gap-2">
+        <div id="plantReminderRows" class="flex flex-col gap-2"></div>
+        <button type="button" onclick="addReminderRow('plant')" class="text-xs text-green-500 hover:text-green-700 text-left mt-0.5">+ Add another date</button>
+       </div>
+      </div>
       <div id="addPlantError" class="text-red-600 text-sm hidden"></div><button type="submit" id="addPlantSubmit" class="w-full py-2.5 rounded-lg text-white font-semibold text-sm transition" style="background:#2d6a4f;">Add Plant</button>
      </form>
     </div>
@@ -103,6 +110,13 @@
       <form id="addNoteForm" onsubmit="handleAddNote(event)" class="flex flex-col gap-3"><input id="noteDate" type="date" required class="w-full border border-green-300 rounded-lg px-3 py-2 text-sm bg-white"> <textarea id="noteText" required rows="2" maxlength="2000" class="w-full border border-green-300 rounded-lg px-3 py-2 text-sm bg-white resize-none" placeholder="How's your plant doing?"></textarea>
        <div><label class="flex items-center gap-2 text-sm text-green-700 cursor-pointer"> <i data-lucide="camera" style="width:16px;height:16px;"></i> Attach Photos <input id="notePhotos" type="file" accept="image/*" multiple class="hidden" onchange="updatePhotoLabel(this)"> </label> <span id="photoCount" class="text-xs text-green-500 mt-1 block"></span>
         <div id="photoPreview" class="flex flex-wrap gap-2 mt-2"></div>
+       </div>
+       <div>
+        <button type="button" onclick="toggleReminderSection('note')" class="flex items-center gap-1.5 text-sm text-green-600 hover:text-green-800 transition"><i data-lucide="bell" style="width:14px;height:14px;"></i> Set a reminder</button>
+        <div id="noteReminderSection" class="hidden mt-2 flex flex-col gap-2">
+         <div id="noteReminderRows" class="flex flex-col gap-2"></div>
+         <button type="button" onclick="addReminderRow('note')" class="text-xs text-green-500 hover:text-green-700 text-left mt-0.5">+ Add another date</button>
+        </div>
        </div>
        <div id="addNoteError" class="text-red-600 text-sm hidden"></div><button type="submit" id="addNoteSubmit" class="w-full py-2 rounded-lg text-white font-semibold text-sm transition" style="background:#2d6a4f;">Save Note</button>
       </form>
