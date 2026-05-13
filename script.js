@@ -11,10 +11,17 @@ let editingNoteId = null;
 
 const categoryEmojis = { annual: '🌸', perennial: '🌿', tropical: '🌴', herb: '🌾', vegetable: '🥕', fruit: '🍎' };
 
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+  ]);
+}
+
 // Authentication state management
 async function checkAuthState() {
   try {
-    const { data: { user } } = await supabaseClient.auth.getUser();
+    const { data: { user } } = await withTimeout(supabaseClient.auth.getUser(), 10000);
     currentUser = user;
     updateAuthUI();
     if (user) {
@@ -88,19 +95,17 @@ async function loadUserData() {
   try {
     showLoading(true);
 
-    const { data: plants, error: plantsError } = await supabaseClient
-      .from('plants')
-      .select('*')
-      .eq('user_id', currentUser.id)
-      .order('date_added', { ascending: false });
+    const { data: plants, error: plantsError } = await withTimeout(
+      supabaseClient.from('plants').select('*').eq('user_id', currentUser.id).order('date_added', { ascending: false }),
+      10000
+    );
 
     if (plantsError) throw plantsError;
 
-    const { data: notes, error: notesError } = await supabaseClient
-      .from('notes')
-      .select('*')
-      .eq('user_id', currentUser.id)
-      .order('note_date', { ascending: false });
+    const { data: notes, error: notesError } = await withTimeout(
+      supabaseClient.from('notes').select('*').eq('user_id', currentUser.id).order('note_date', { ascending: false }),
+      10000
+    );
 
     if (notesError) throw notesError;
 
