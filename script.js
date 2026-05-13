@@ -20,10 +20,14 @@ function withTimeout(promise, ms) {
   ]);
 }
 
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && loadingInProgress) showLoading(false);
+});
+
 // Authentication state management
 async function checkAuthState() {
   try {
-    const { data: { user } } = await withTimeout(supabaseClient.auth.getUser(), 10000);
+    const { data: { user } } = await withTimeout(supabaseClient.auth.getUser(), 8000);
     currentUser = user;
     updateAuthUI();
     if (user) {
@@ -102,14 +106,14 @@ async function loadUserData() {
 
     const { data: plants, error: plantsError } = await withTimeout(
       supabaseClient.from('plants').select('*').eq('user_id', currentUser.id).order('date_added', { ascending: false }),
-      10000
+      8000
     );
 
     if (plantsError) throw plantsError;
 
     const { data: notes, error: notesError } = await withTimeout(
       supabaseClient.from('notes').select('*').eq('user_id', currentUser.id).order('note_date', { ascending: false }),
-      10000
+      8000
     );
 
     if (notesError) throw notesError;
@@ -141,8 +145,15 @@ async function loadUserData() {
 
 function showLoading(show) {
   const overlay = document.getElementById('loadingOverlay');
-  if (show) overlay.classList.remove('hidden');
-  else overlay.classList.add('hidden');
+  clearTimeout(loadingFailsafe);
+  if (show) {
+    loadingInProgress = true;
+    overlay.classList.remove('hidden');
+    loadingFailsafe = setTimeout(() => { loadingInProgress = false; overlay.classList.add('hidden'); }, 12000);
+  } else {
+    loadingInProgress = false;
+    overlay.classList.add('hidden');
+  }
 }
 
 // Photo helpers
@@ -453,11 +464,12 @@ async function handleLogout() {
 
 // Initialize app
 (async () => {
+  let appReady = false;
   supabaseClient.auth.onAuthStateChange(async (event, session) => {
     if (event === 'SIGNED_IN') {
       currentUser = session?.user || null;
       updateAuthUI();
-      if (currentUser) await loadUserData();
+      if (currentUser && appReady) await loadUserData();
     } else if (event === 'SIGNED_OUT') {
       currentUser = null;
       allData = [];
@@ -466,6 +478,7 @@ async function handleLogout() {
     }
   });
   await checkAuthState();
+  appReady = true;
   checkDueReminders();
 })();
 
