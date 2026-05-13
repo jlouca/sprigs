@@ -8,6 +8,8 @@ let pendingPlantProfilePhoto = null;
 let pendingIdentifyPhoto = null;
 let currentUser = null;
 let editingNoteId = null;
+let loadingInProgress = false;
+let loadingFailsafe = null;
 
 const categoryEmojis = { annual: '🌸', perennial: '🌿', tropical: '🌴', herb: '🌾', vegetable: '🥕', fruit: '🍎' };
 
