@@ -1033,6 +1033,121 @@ function openLightbox(src) {
   document.body.appendChild(lb);
 }
 
+// --- Plant Identification (Plant.id API) ---
+
+function getPlantIdApiKey() {
+  return localStorage.getItem('sprigs_plantid_key') || '';
+}
+
+function savePlantIdApiKey() {
+  const key = (document.getElementById('plantIdApiKeyInput')?.value || '').trim();
+  if (!key) return;
+  localStorage.setItem('sprigs_plantid_key', key);
+  document.getElementById('plantIdApiKeySection')?.classList.add('hidden');
+  identifyPlant();
+}
+
+async function identifyPlant() {
+  if (!pendingPlantProfilePhoto) return;
+
+  const apiKey = getPlantIdApiKey();
+  if (!apiKey) {
+    document.getElementById('plantIdApiKeySection')?.classList.remove('hidden');
+    return;
+  }
+
+  const btn = document.getElementById('identifyBtn');
+  const resultsEl = document.getElementById('plantIdResults');
+  btn.disabled = true;
+  btn.textContent = 'Identifying…';
+  resultsEl?.classList.add('hidden');
+
+  try {
+    const base64 = await fileToBase64(pendingPlantProfilePhoto);
+    const res = await fetch('https://api.plant.id/v3/identification', {
+      method: 'POST',
+      headers: { 'Api-Key': apiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ images: [base64], details: ['common_names'] })
+    });
+
+    if (res.status === 401) {
+      localStorage.removeItem('sprigs_plantid_key');
+      throw new Error('Invalid API key — please re-enter it.');
+    }
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+
+    const data = await res.json();
+
+    if (!data.result?.is_plant?.binary) {
+      resultsEl.innerHTML = `<p class="text-xs text-amber-700 mt-1">No plant detected in this photo. Try a clearer image.</p>`;
+      resultsEl.classList.remove('hidden');
+      return;
+    }
+
+    const suggestions = (data.result?.classification?.suggestions || []).slice(0, 3);
+    if (!suggestions.length) {
+      resultsEl.innerHTML = `<p class="text-xs text-amber-700 mt-1">Could not identify this plant.</p>`;
+      resultsEl.classList.remove('hidden');
+      return;
+    }
+
+    resultsEl.innerHTML = `
+      <p class="text-xs font-semibold text-green-800 mb-1.5">Top matches — click to use:</p>
+      <div class="flex flex-col gap-1.5">
+        ${suggestions.map(s => {
+          const common = s.details?.common_names?.[0] || s.name;
+          const pct = Math.round((s.probability || 0) * 100);
+          return `<div class="flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg border border-green-200" style="background:#f0faf2;">
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-semibold text-green-900 truncate">${escapeHtml(common)}</p>
+              <p class="text-xs text-green-600 italic truncate">${escapeHtml(s.name)} &middot; ${pct}%</p>
+            </div>
+            <button type="button" class="text-xs text-white px-2.5 py-1 rounded-md shrink-0 font-semibold" style="background:#2d6a4f;" data-name="${escapeHtml(common)}" onclick="applyPlantIdResult(this.dataset.name)">Use</button>
+          </div>`;
+        }).join('')}
+      </div>
+      <button type="button" onclick="forgetPlantIdKey()" class="text-xs text-green-400 hover:text-green-600 mt-2">Change API key</button>`;
+    resultsEl.classList.remove('hidden');
+  } catch (err) {
+    console.error('Plant ID error:', err);
+    resultsEl.innerHTML = `<p class="text-xs text-red-600 mt-1">${escapeHtml(err.message)}</p>`;
+    if (err.message.includes('API key')) {
+      document.getElementById('plantIdApiKeySection')?.classList.remove('hidden');
+    }
+    resultsEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="search" style="width:12px;height:12px;"></i> Identify Again';
+    lucide.createIcons();
+  }
+}
+
+function applyPlantIdResult(name) {
+  const nameInput = document.getElementById('plantName');
+  if (nameInput) {
+    nameInput.value = name;
+    nameInput.focus();
+  }
+  document.getElementById('plantIdResults')?.classList.add('hidden');
+  showToast('Plant name filled in!');
+}
+
+function forgetPlantIdKey() {
+  localStorage.removeItem('sprigs_plantid_key');
+  document.getElementById('plantIdResults')?.classList.add('hidden');
+  document.getElementById('plantIdApiKeySection')?.classList.remove('hidden');
+  document.getElementById('plantIdApiKeyInput').value = '';
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 // --- Reminders (localStorage) ---
 
 function toggleReminderSection(type) {
