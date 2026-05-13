@@ -1017,4 +1017,105 @@ function openLightbox(src) {
   document.body.appendChild(lb);
 }
 
+// --- Reminders (localStorage) ---
+
+function toggleReminderSection(type) {
+  const sectionId = type === 'plant' ? 'plantReminderSection' : 'noteReminderSection';
+  const rowsId   = type === 'plant' ? 'plantReminderRows'   : 'noteReminderRows';
+  const section  = document.getElementById(sectionId);
+  if (!section) return;
+  const willShow = section.classList.contains('hidden');
+  section.classList.toggle('hidden');
+  if (willShow) {
+    const rows = document.getElementById(rowsId);
+    if (rows && rows.children.length === 0) addReminderRow(type);
+  }
+}
+
+function addReminderRow(type) {
+  const rowsId = type === 'plant' ? 'plantReminderRows' : 'noteReminderRows';
+  const rows = document.getElementById(rowsId);
+  if (!rows) return;
+  const today = new Date().toISOString().split('T')[0];
+  const row = document.createElement('div');
+  row.className = 'reminder-row flex gap-2 items-center';
+  row.innerHTML = `<input type="date" class="reminder-date border border-green-300 rounded-lg px-2 py-1.5 text-sm bg-white" style="flex:1" min="${today}"><input type="text" placeholder="Label (optional)" class="reminder-label border border-green-300 rounded-lg px-2 py-1.5 text-sm bg-white" style="flex:1" maxlength="60"><button type="button" onclick="removeReminderRow(this)" class="text-red-400 hover:text-red-600 font-bold text-lg leading-none px-1 shrink-0" aria-label="Remove">×</button>`;
+  rows.appendChild(row);
+}
+
+function removeReminderRow(btn) {
+  btn.closest('.reminder-row')?.remove();
+}
+
+function collectReminderRows(type) {
+  const rowsId = type === 'plant' ? 'plantReminderRows' : 'noteReminderRows';
+  const reminders = [];
+  document.querySelectorAll(`#${rowsId} .reminder-row`).forEach(row => {
+    const date  = row.querySelector('.reminder-date')?.value;
+    const label = (row.querySelector('.reminder-label')?.value || '').trim();
+    if (date) reminders.push({ date, label });
+  });
+  return reminders;
+}
+
+function resetReminderSection(type) {
+  const sectionId = type === 'plant' ? 'plantReminderSection' : 'noteReminderSection';
+  const rowsId    = type === 'plant' ? 'plantReminderRows'    : 'noteReminderRows';
+  const section = document.getElementById(sectionId);
+  const rows    = document.getElementById(rowsId);
+  if (section) section.classList.add('hidden');
+  if (rows) rows.innerHTML = '';
+}
+
+function getStoredReminders() {
+  try { return JSON.parse(localStorage.getItem('sprigs_reminders') || '[]'); }
+  catch { return []; }
+}
+
+function saveStoredReminders(list) {
+  localStorage.setItem('sprigs_reminders', JSON.stringify(list));
+}
+
+function persistReminders(pending, plantId, plantName, sourceType) {
+  if (!pending.length) return;
+  const stored = getStoredReminders();
+  pending.forEach(r => stored.push({ id: generateId(), plantId, plantName, label: r.label, date: r.date, createdFrom: sourceType }));
+  saveStoredReminders(stored);
+}
+
+function checkDueReminders() {
+  const today = new Date().toISOString().split('T')[0];
+  const due = getStoredReminders().filter(r => r.date <= today);
+  if (due.length) showReminderBanner(due);
+}
+
+function showReminderBanner(due) {
+  const banner = document.getElementById('reminderBanner');
+  const list   = document.getElementById('reminderBannerList');
+  if (!banner || !list) return;
+  list.innerHTML = due.map(r =>
+    `<div class="reminder-item flex items-center justify-between gap-2" data-id="${r.id}">
+      <span class="text-xs text-amber-900 min-w-0"><strong>${escapeHtml(r.plantName)}</strong>${r.label ? ' — ' + escapeHtml(r.label) : ''}<span class="text-amber-500 ml-1">(${formatReminderDate(r.date)})</span></span>
+      <button onclick="dismissReminder('${r.id}')" class="text-amber-600 hover:text-amber-800 text-xs font-medium underline shrink-0">Done</button>
+    </div>`
+  ).join('');
+  banner.classList.remove('hidden');
+}
+
+function formatReminderDate(dateStr) {
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function dismissReminder(id) {
+  saveStoredReminders(getStoredReminders().filter(r => r.id !== id));
+  document.querySelector(`.reminder-item[data-id="${id}"]`)?.remove();
+  if (!document.querySelector('.reminder-item')) document.getElementById('reminderBanner')?.classList.add('hidden');
+}
+
+function dismissAllReminders() {
+  const today = new Date().toISOString().split('T')[0];
+  saveStoredReminders(getStoredReminders().filter(r => r.date > today));
+  document.getElementById('reminderBanner')?.classList.add('hidden');
+}
+
 lucide.createIcons();
