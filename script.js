@@ -333,8 +333,12 @@ async function handleLogin(event) {
   event.preventDefault();
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
+  const rememberMe = document.getElementById('rememberMe').checked;
   const submitBtn = document.getElementById('loginSubmit');
   const errorEl = document.getElementById('loginError');
+
+  // Save preference before login so AdaptiveStorage uses the right backend
+  localStorage.setItem('sprigs_remember_me', rememberMe ? 'true' : 'false');
 
   submitBtn.disabled = true;
   submitBtn.textContent = 'Logging in...';

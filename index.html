@@ -119,6 +119,10 @@
        </div>
        <div><label for="loginPassword" class="block text-sm font-medium text-green-800 mb-1">Password</label> <input id="loginPassword" type="password" required class="w-full border border-green-300 rounded-lg px-3 py-2 text-sm bg-white" placeholder="••••••••">
        </div>
+       <div class="flex items-center gap-2">
+        <input id="rememberMe" type="checkbox" checked class="accent-green-700 cursor-pointer">
+        <label for="rememberMe" class="text-sm text-green-700 cursor-pointer select-none">Remember me</label>
+       </div>
        <div id="loginError" class="text-red-600 text-sm hidden"></div><button type="submit" id="loginSubmit" class="w-full py-2.5 rounded-lg text-white font-semibold text-sm transition" style="background:#2d6a4f;">Login</button>
        <div class="text-center"><button type="button" onclick="switchAuthMode('register')" class="text-sm text-green-600 hover:text-green-800">Don't have an account? Register</button></div>
        <div class="text-center"><button type="button" onclick="switchAuthMode('forgot')" class="text-xs text-green-500 hover:text-green-700">Forgot password?</button></div>
