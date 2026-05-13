@@ -579,6 +579,8 @@ function closeAddPlantModal() {
   document.getElementById('addPlantSubmit').textContent = 'Add Plant';
   pendingPlantProfilePhoto = null;
   resetReminderSection('plant');
+  document.getElementById('plantIdentifySection')?.classList.add('hidden');
+  document.getElementById('plantIdResults')?.classList.add('hidden');
 }
 document.getElementById('addPlantModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeAddPlantModal(); });
 
@@ -588,6 +590,7 @@ function updatePlantProfilePhoto(input) {
     pendingPlantProfilePhoto = null;
     document.getElementById('plantProfilePhotoCount').textContent = '';
     document.getElementById('plantProfilePhotoPreview').innerHTML = '';
+    document.getElementById('plantIdentifySection')?.classList.add('hidden');
     return;
   }
   pendingPlantProfilePhoto = file;
@@ -597,6 +600,10 @@ function updatePlantProfilePhoto(input) {
   img.style.cssText = 'width:80px;height:80px;object-fit:cover;border-radius:8px;';
   document.getElementById('plantProfilePhotoPreview').innerHTML = '';
   document.getElementById('plantProfilePhotoPreview').appendChild(img);
+  document.getElementById('plantIdentifySection')?.classList.remove('hidden');
+  document.getElementById('plantIdResults')?.classList.add('hidden');
+  document.getElementById('plantIdApiKeySection')?.classList.add('hidden');
+  lucide.createIcons();
 }
 
 async function handleAddPlant(e) {
