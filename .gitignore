@@ -1,0 +1,5 @@
+auto-commit.log
+node_modules/
+.DS_Store
+Thumbs.db
+*.env

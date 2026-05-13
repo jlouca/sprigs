@@ -16,6 +16,22 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "Start Git Watcher",
+      "type": "shell",
+      "command": "node watcher.js",
+      "args": [],
+      "problemMatcher": [],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "showReuseMessage": false
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      }
     }
   ]
 }
