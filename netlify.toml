@@ -1,5 +1,5 @@
 [build]
-  command = "npx tailwindcss@3.4.17 -i input.css -o tailwind.css --minify"
+  command = "npx tailwindcss@3.4.17 -i input.css -o tailwind.css --minify && npx terser@5 script.js -o script.js --compress --mangle"
   publish = "."
 
 [[redirects]]
