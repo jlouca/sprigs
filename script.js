@@ -76,7 +76,10 @@ function showAuthRequired() {
 }
 
 const MAIN_CONTENT_HTML = `
-  <button id="addPlantBtn" onclick="openAddPlantModal()" class="mb-6 flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all" style="background: #2d6a4f;"> <i data-lucide="plus" style="width:18px;height:18px;"></i> <span id="addPlantBtnText">Add New Plant</span> </button>
+  <div class="flex flex-col items-center gap-2 mb-6">
+    <button id="addPlantBtn" onclick="openAddPlantModal()" class="flex items-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all" style="background: #2d6a4f;"> <i data-lucide="plus" style="width:18px;height:18px;"></i> <span id="addPlantBtnText">Add New Plant</span> </button>
+    <button onclick="openIdentifyModal()" class="flex items-center gap-2 px-5 py-2 rounded-full font-semibold text-sm transition-all border-2" style="color:#2d6a4f;border-color:#2d6a4f;background:transparent;"><i data-lucide="search" style="width:14px;height:14px;"></i> Identify Plant</button>
+  </div>
   <div class="w-full mb-4">
     <input id="searchInput" type="text" placeholder="Search plants..." oninput="filterSearch(this.value)" class="w-full border border-green-300 rounded-full px-4 py-2 text-sm bg-white" style="outline:none;">
   </div>
