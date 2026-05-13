@@ -577,6 +577,7 @@ function closeAddPlantModal() {
   document.getElementById('addPlantSubmit').disabled = false;
   document.getElementById('addPlantSubmit').textContent = 'Add Plant';
   pendingPlantProfilePhoto = null;
+  resetReminderSection('plant');
 }
 document.getElementById('addPlantModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeAddPlantModal(); });
 
@@ -727,6 +728,7 @@ function closeDetailModal() {
   currentPlantId = null;
   editingNoteId = null;
   document.getElementById('detailModal').classList.add('hidden');
+  resetReminderSection('note');
 }
 document.getElementById('detailModal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeDetailModal(); });
 
