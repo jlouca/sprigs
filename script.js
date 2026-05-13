@@ -653,6 +653,8 @@ async function handleAddPlant(e) {
       }
     }
 
+    const plantReminders = collectReminderRows('plant');
+    if (plantReminders.length) persistReminders(plantReminders, result.id, name, 'plant');
     closeAddPlantModal();
     showToast(`${name} added! 🌱`);
   } catch (error) {
@@ -823,6 +825,10 @@ async function handleAddNote(e) {
       document.getElementById('photoCount').textContent = '';
       document.getElementById('photoPreview').innerHTML = '';
       pendingPhotos = [];
+      const notePlant = allData.find(d => d.__backendId === currentPlantId);
+      const noteReminders = collectReminderRows('note');
+      if (noteReminders.length) persistReminders(noteReminders, currentPlantId, notePlant?.plant_name || 'Plant', 'note');
+      resetReminderSection('note');
       showToast('Note saved! 📝');
     } else {
       errEl.textContent = 'Failed to save note. Try again.';
