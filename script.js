@@ -125,7 +125,10 @@ async function loadUserData() {
 
   } catch (error) {
     console.error('Error loading user data:', error);
-    showToast('Failed to load your data. Please try refreshing.');
+    const msg = error.message === 'timeout'
+      ? 'Could not reach the server. Please check your connection and try again.'
+      : 'Failed to load your data. Please try refreshing.';
+    showToast(msg);
   } finally {
     showLoading(false);
   }
