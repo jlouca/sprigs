@@ -452,6 +452,7 @@ async function handleLogout() {
     }
   });
   await checkAuthState();
+  checkDueReminders();
 })();
 
 // Helpers

@@ -64,6 +64,17 @@
       </div>
       <div><label class="flex items-center gap-2 text-sm text-green-700 cursor-pointer"> <i data-lucide="camera" style="width:16px;height:16px;"></i> Plant Photo (Profile) <input id="plantProfilePhoto" type="file" accept="image/*" class="hidden" onchange="updatePlantProfilePhoto(this)"> </label> <span id="plantProfilePhotoCount" class="text-xs text-green-500 mt-1 block"></span>
        <div id="plantProfilePhotoPreview" class="mt-2"></div>
+       <div id="plantIdentifySection" class="hidden mt-2">
+        <button type="button" id="identifyBtn" onclick="identifyPlant()" class="flex items-center gap-1.5 text-xs font-semibold text-white px-3 py-1.5 rounded-full transition" style="background:#2d6a4f;"><i data-lucide="search" style="width:12px;height:12px;"></i> Identify Plant</button>
+        <div id="plantIdApiKeySection" class="hidden mt-2 p-3 rounded-lg border border-amber-200" style="background:#fffbeb;">
+         <p class="text-xs text-amber-800 mb-1.5">A free <strong>Plant.id API key</strong> is required. <a href="https://web.plant.id/plant-identification-api/" target="_blank" rel="noopener noreferrer" class="underline hover:text-amber-900">Get one free</a> — 100 IDs/month.</p>
+         <div class="flex gap-2">
+          <input id="plantIdApiKeyInput" type="text" class="flex-1 border border-amber-300 rounded-lg px-2 py-1.5 text-xs bg-white" placeholder="Paste API key here">
+          <button type="button" onclick="savePlantIdApiKey()" class="px-3 py-1.5 rounded-lg text-white text-xs font-semibold shrink-0" style="background:#2d6a4f;">Save &amp; Identify</button>
+         </div>
+        </div>
+        <div id="plantIdResults" class="hidden mt-2"></div>
+       </div>
       </div>
       <div><label for="plantNoteDate" class="block text-sm font-medium text-green-800 mb-1">Initial Note Date (optional)</label> <input id="plantNoteDate" type="date" class="w-full border border-green-300 rounded-lg px-3 py-2 text-sm bg-white">
       </div>
