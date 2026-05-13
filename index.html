@@ -16,7 +16,18 @@
   <script src="supabase-config.js?v=1"></script>
  </head>
  <body class="h-full" style="background: #e8f7eb;">
-  <div id="app" class="h-full overflow-auto w-full"><!-- Header -->
+  <div id="app" class="h-full overflow-auto w-full"><!-- Reminder Banner -->
+   <div id="reminderBanner" class="hidden sticky top-0 z-40 w-full" style="background:#fffbeb;border-bottom:2px solid #d97706;">
+    <div class="max-w-2xl mx-auto px-4 py-3">
+     <div class="flex justify-between items-start gap-3">
+      <div class="flex-1 min-w-0">
+       <p class="text-sm font-semibold text-amber-800 mb-1.5">🔔 Reminders</p>
+       <div id="reminderBannerList" class="flex flex-col gap-1.5"></div>
+      </div>
+      <button onclick="dismissAllReminders()" class="text-xs text-amber-600 hover:text-amber-800 font-medium shrink-0 mt-0.5 underline">Dismiss all</button>
+     </div>
+    </div>
+   </div><!-- Header -->
    <header style="background: #e8f7eb;" class="w-full">
     <div class="max-w-2xl mx-auto px-4 pt-3 pb-1 flex flex-col items-center gap-2">
       <div id="appTitle" class="flex items-center justify-center w-full relative">

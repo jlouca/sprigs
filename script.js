@@ -306,6 +306,8 @@ function openAuthModal(mode) {
   if (mode === 'login') {
     title.textContent = 'Login';
     loginForm.classList.remove('hidden');
+    const rememberMe = document.getElementById('rememberMe');
+    if (rememberMe) rememberMe.checked = localStorage.getItem('sprigs_remember_me') !== 'false';
   } else if (mode === 'register') {
     title.textContent = 'Register';
     registerForm.classList.remove('hidden');
