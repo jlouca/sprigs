@@ -90,6 +90,29 @@
       <div id="addPlantError" class="text-red-600 text-sm hidden"></div><button type="submit" id="addPlantSubmit" class="w-full py-2.5 rounded-lg text-white font-semibold text-sm transition" style="background:#2d6a4f;">Add Plant</button>
      </form>
     </div>
+   </div><!-- Identify Plant Modal -->
+   <div id="identifyModal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-overlay" role="dialog" aria-modal="true" aria-labelledby="identifyModalTitle" onclick="closeIdentifyModal()">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 fade-in" onclick="event.stopPropagation()">
+     <div class="flex justify-between items-center mb-4">
+      <h2 id="identifyModalTitle" class="text-xl font-bold text-green-900">Identify Plant</h2><button onclick="closeIdentifyModal()" aria-label="Close" class="p-1 rounded-full hover:bg-green-100 transition"><i data-lucide="x" style="width:20px;height:20px;color:#2d6a4f;"></i></button>
+     </div>
+     <div class="flex flex-col gap-4">
+      <div>
+       <label class="flex items-center gap-2 text-sm text-green-700 cursor-pointer"><i data-lucide="camera" style="width:16px;height:16px;"></i> Upload a photo to identify <input id="identifyPhotoInput" type="file" accept="image/*" class="hidden" onchange="updateIdentifyPhotoHome(this)"></label>
+       <span id="identifyPhotoCount" class="text-xs text-green-500 mt-1 block"></span>
+       <div id="identifyPhotoPreview" class="mt-2"></div>
+      </div>
+      <button type="button" id="identifyBtnHome" onclick="identifyPlantHome()" class="hidden flex items-center gap-1.5 text-xs font-semibold text-white px-3 py-1.5 rounded-full transition" style="background:#2d6a4f;"><i data-lucide="search" style="width:12px;height:12px;"></i> Identify Plant</button>
+      <div id="homeIdentifyApiKeySection" class="hidden p-3 rounded-lg border border-amber-200" style="background:#fffbeb;">
+       <p class="text-xs text-amber-800 mb-1.5">A free <strong>Plant.id API key</strong> is required. <a href="https://web.plant.id/plant-identification-api/" target="_blank" rel="noopener noreferrer" class="underline hover:text-amber-900">Get one free</a> — 100 IDs/month.</p>
+       <div class="flex gap-2">
+        <input id="homeIdentifyApiKeyInput" type="text" class="flex-1 border border-amber-300 rounded-lg px-2 py-1.5 text-xs bg-white" placeholder="Paste API key here">
+        <button type="button" onclick="savePlantIdApiKeyHome()" class="px-3 py-1.5 rounded-lg text-white text-xs font-semibold shrink-0" style="background:#2d6a4f;">Save &amp; Identify</button>
+       </div>
+      </div>
+      <div id="homeIdentifyResults" class="hidden"></div>
+     </div>
+    </div>
    </div><!-- Plant Detail Modal -->
    <div id="detailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detailName">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[85%] overflow-auto p-6 fade-in" onclick="event.stopPropagation()">
